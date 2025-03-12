@@ -47,15 +47,20 @@ async def on_message(message):
         parts = message.content.split(" ", 1)
         
         if len(parts) < 2:
-            await message.channel.send("🎯 Please let me know topic !book (ví dụ: !book science)")
+            await message.channel.send("🎯 Please let me know topic !book (ex: !book science)")
             return
             
         topic = parts[1].strip()
-        
+        #Check eligible
         if not topic:
             await message.channel.send("❌ Topic is empty")
             return
-
+        if len(topic) < 2:
+            await message.channel.send("Topic is not eligible")
+            return
+        if not re.match(r'^[a-zA-Z\s]+$', topic):
+            await message.channel.send("Topic is not eligible")
+            return
         async with message.channel.typing():
             try:
                 recommendations = get_book_recommendations(topic)
